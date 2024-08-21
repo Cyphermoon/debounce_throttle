@@ -39,16 +39,28 @@ function debounce(callback, delay = 1000) {
 
 function throttle(callback, delay = 1000) {
     let shouldWait = false
+    let waitingArgs;
+
+    let timeoutFunc = () => {
+        if (waitingArgs === null) {
+            shouldWait = false
+        } else {
+            callback(...waitingArgs)
+            waitingArgs = null
+            setTimeout(timeoutFunc, delay)
+        }
+    }
 
     return (...args) => {
-        if (shouldWait) return
+        if (shouldWait) {
+            waitingArgs = args
+            return
+        }
 
         callback(...args)
         shouldWait = true
 
-        setTimeout(() => {
-            shouldWait = false
-        }, delay)
+        setTimeout(timeoutFunc, delay)
 
     }
 }
