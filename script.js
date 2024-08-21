@@ -7,9 +7,14 @@ const updateDebounceText = debounce((text) => {
     debounceText.textContent = text
 })
 
+const updateThrottleText = throttle((text) => {
+    throttleText.textContent = text
+})
+
 document.addEventListener("input", (e) => {
     defaultText.textContent = e.target.value
     updateDebounceText(e.target.value)
+    updateThrottleText(e.target.value)
 })
 
 function debounce(callback, delay = 1000) {
@@ -30,4 +35,20 @@ function debounce(callback, delay = 1000) {
         }, delay)
     }
 
+}
+
+function throttle(callback, delay = 1000) {
+    let shouldWait = false
+
+    return (...args) => {
+        if (shouldWait) return
+
+        callback(...args)
+        shouldWait = true
+
+        setTimeout(() => {
+            shouldWait = false
+        }, delay)
+
+    }
 }
